@@ -6,3 +6,11 @@ def pytest_addoption(parser):
         default=False,
         help="Run integration tests that require external API access",
     )
+
+
+def pytest_configure(config):
+    """Register custom pytest marks"""
+    config.addinivalue_line(
+        "markers",
+        "integration: mark test as integration test requiring external API access",
+    )

@@ -3,7 +3,7 @@ from enum import Enum
 from functools import lru_cache
 
 # Use pydantic_settings for better validation and type hints
-from pydantic_settings import BaseSettings as PydanticBaseSettings
+from pydantic_settings import BaseSettings as PydanticBaseSettings, SettingsConfigDict
 
 
 class AppSettings(Enum):
@@ -45,11 +45,11 @@ class BaseSettings(PydanticBaseSettings):
     # The One API key for accessing LotR data
     THE_ONE_API_KEY: str | None = None
 
-    class Config:
-        # Optional: Load settings from a .env file
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        extra = "ignore"  # Ignore extra env vars not defined in the model
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",  # Ignore extra env vars not defined in the model
+    )
 
 
 class DevelopmentSettings(BaseSettings):

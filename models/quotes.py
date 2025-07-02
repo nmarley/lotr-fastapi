@@ -1,9 +1,11 @@
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class Character(BaseModel):
     """Model for character data from The One API"""
+
+    model_config = ConfigDict(populate_by_name=True)
 
     id: str = Field(alias="_id")
     height: Optional[str] = None
@@ -17,20 +19,16 @@ class Character(BaseModel):
     name: str
     wikiUrl: Optional[str] = None
 
-    class Config:
-        populate_by_name = True
-
 
 class Quote(BaseModel):
     """Model for quote data from The One API"""
+
+    model_config = ConfigDict(populate_by_name=True)
 
     id: str = Field(alias="_id")
     dialog: str
     movie: str
     character: str
-
-    class Config:
-        populate_by_name = True
 
 
 class TheOneAPIResponse(BaseModel):
