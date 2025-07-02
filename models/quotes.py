@@ -26,7 +26,7 @@ class Quote(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     id: str = Field(alias="_id")
-    dialog: str
+    dialog: Optional[str] = None
     movie: str
     character: str
 

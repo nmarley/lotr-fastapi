@@ -111,7 +111,8 @@ class TheOneAPIService:
             endpoint = f"character/{character_id}/quote"
             data = await self._make_request(endpoint)
             response = QuoteResponse(**data)
-            return response.docs
+            # Filter out quotes with None dialog
+            return [quote for quote in response.docs if quote.dialog is not None]
 
         except TheOneAPIError:
             raise
