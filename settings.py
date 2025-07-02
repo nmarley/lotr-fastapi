@@ -42,6 +42,9 @@ class BaseSettings(PydanticBaseSettings):
     # If you defined it as `EXAMPLE_API_KEY: str`, pydantic would raise an error if the env var is missing.
     EXAMPLE_API_KEY: str | None = None
 
+    # The One API key for accessing LotR data
+    THE_ONE_API_KEY: str | None = None
+
     class Config:
         # Optional: Load settings from a .env file
         env_file = ".env"
@@ -133,3 +136,4 @@ print(f"CORS Origins: {settings.CORS_ORIGINS}")
 print(f"Testing: {settings.TESTING}")
 # Accessing the example setting
 print(f"Example API Key: {settings.EXAMPLE_API_KEY}")
+print(f"The One API Key: {settings.THE_ONE_API_KEY}")
