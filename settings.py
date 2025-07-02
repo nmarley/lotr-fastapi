@@ -73,8 +73,6 @@ class StagingSettings(BaseSettings):
 
     DEBUG: bool = False
     # No defaults - these must be provided in the staging environment
-    DATABASE_URL: str
-    SECRET_KEY: str
 
 
 class ProductionSettings(BaseSettings):
@@ -86,8 +84,6 @@ class ProductionSettings(BaseSettings):
 
     DEBUG: bool = False
     # No defaults - these must be provided in the production environment
-    DATABASE_URL: str
-    SECRET_KEY: str
     CORS_ORIGINS: list[str] = ["https://your-production-domain.com"]
 
 
@@ -97,10 +93,13 @@ class TestingSettings(BaseSettings):
     """
 
     TESTING: bool = True
-    DEBUG: bool = True  # Often useful for debugging tests
-    # Provide defaults for testing
-    DATABASE_URL: str = "postgresql+psycopg2://user:password@localhost:5432/app_test"
-    SECRET_KEY: str = "a-very-insecure-testing-secret-key"
+    DEBUG: bool = True
+
+    model_config = SettingsConfigDict(
+        env_file=None,  # Don't read .env file during testing
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
 
 @lru_cache()  # Cache the settings object for performance
