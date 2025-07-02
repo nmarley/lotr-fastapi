@@ -34,7 +34,7 @@ dependencies = [
     "websockets==15.0.1",
 ]
 
-# [tool.pytest.ini_options]
-# pythonpath = [
-#     "."
-# ]
+[tool.pytest.ini_options]
+pythonpath = [
+    "."
+]
