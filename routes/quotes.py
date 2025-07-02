@@ -1,8 +1,11 @@
+import logging
 from fastapi import APIRouter, HTTPException, Depends
 from services.the_one_api import TheOneAPIService, TheOneAPIError
 from models.quotes import QuoteAPIResponse
 from models.errors import ErrorResponse, ExternalAPIError
 from settings import get_settings, BaseSettings
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -41,7 +44,7 @@ async def get_character_quote(
         if not quote:
             raise HTTPException(
                 status_code=404,
-                detail=f"No quotes found for character '{character_name}'",
+                detail=f"Character '{character_name}' not found or has no quotes",
             )
 
         # Find character info for the response
@@ -52,16 +55,33 @@ async def get_character_quote(
             character=character_display_name, quote=quote.dialog, movie=quote.movie
         )
 
+    except HTTPException:
+        # Let FastAPI HTTPExceptions bubble up naturally
+        raise
     except TheOneAPIError as e:
+        # Proxy the backend error status codes
+        logger.error(
+            f"TheOneAPIError for '{character_name}': {e.status_code} - {e.message}"
+        )
         if e.status_code == 404:
             raise HTTPException(
                 status_code=404, detail=f"Character '{character_name}' not found"
             )
-        elif e.status_code in [401, 429]:
+        elif e.status_code == 401:
             raise HTTPException(
-                status_code=503, detail="The One API is currently unavailable"
+                status_code=503, detail="The One API authentication failed"
+            )
+        elif e.status_code == 429:
+            raise HTTPException(
+                status_code=503, detail="The One API rate limit exceeded"
             )
         else:
-            raise HTTPException(status_code=503, detail="External API error occurred")
-    except Exception:
+            # Proxy other HTTP status codes from the backend
+            raise HTTPException(
+                status_code=e.status_code, detail=f"The One API error: {e.message}"
+            )
+    except Exception as e:
+        logger.error(
+            f"Unexpected error in get_character_quote for '{character_name}': {type(e).__name__}: {str(e)}"
+        )
         raise HTTPException(status_code=500, detail="An unexpected error occurred")
