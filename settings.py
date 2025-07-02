@@ -22,6 +22,7 @@ class BaseSettings(PydanticBaseSettings):
     Base settings class using pydantic-settings.
     Settings are automatically loaded from environment variables.
     """
+
     APP_NAME: str = "FastAPI Service"
     DEBUG: bool = False
     ENVIRONMENT: str = ENVIRONMENT
@@ -43,9 +44,9 @@ class BaseSettings(PydanticBaseSettings):
 
     class Config:
         # Optional: Load settings from a .env file
-        env_file = '.env'
-        env_file_encoding = 'utf-8'
-        extra = 'ignore'  # Ignore extra env vars not defined in the model
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+        extra = "ignore"  # Ignore extra env vars not defined in the model
 
 
 class DevelopmentSettings(BaseSettings):
@@ -53,6 +54,7 @@ class DevelopmentSettings(BaseSettings):
     Development specific settings.
     Overrides defaults from BaseSettings.
     """
+
     DEBUG: bool = True
     # Provide defaults for development if env vars aren't set
     DATABASE_URL: str = "postgresql+psycopg2://user:password@localhost:5432/app_dev"
@@ -65,6 +67,7 @@ class StagingSettings(BaseSettings):
     Staging specific settings.
     Requires DATABASE_URL and SECRET_KEY to be set via environment variables.
     """
+
     DEBUG: bool = False
     # No defaults - these must be provided in the staging environment
     DATABASE_URL: str
@@ -77,6 +80,7 @@ class ProductionSettings(BaseSettings):
     Requires DATABASE_URL and SECRET_KEY to be set via environment variables.
     Restricts CORS_ORIGINS.
     """
+
     DEBUG: bool = False
     # No defaults - these must be provided in the production environment
     DATABASE_URL: str
@@ -88,6 +92,7 @@ class TestingSettings(BaseSettings):
     """
     Testing specific settings.
     """
+
     TESTING: bool = True
     DEBUG: bool = True  # Often useful for debugging tests
     # Provide defaults for testing
@@ -112,8 +117,7 @@ def get_settings() -> BaseSettings:
     elif env == AppSettings.TESTING.value:
         return TestingSettings()
     else:
-        print(
-            f"Warning: Unknown environment '{env}'. Falling back to BaseSettings.")
+        print(f"Warning: Unknown environment '{env}'. Falling back to BaseSettings.")
         # Fallback or raise an error depending on desired behavior
         return BaseSettings()
 
